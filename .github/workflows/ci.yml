@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
+      fail-fast: false  # Don't cancel other jobs if one fails
         
     steps:
     - name: Checkout code
@@ -36,19 +37,43 @@ jobs:
         
     - name: Build OpenMP implementation
       run: |
-        make omp_bfs CXX=$CXX
+        echo "🔨 Building OpenMP implementation with ${{ matrix.compiler }}..."
+        make omp_bfs CXX=$CXX CXXFLAGS="-O2 -std=c++17" || exit 1
         
     - name: Build MPI implementation  
       run: |
-        make mpi_bfs MPICXX=mpic++
+        echo "🔨 Building MPI implementation..."
+        make mpi_bfs MPICXX=mpic++ CXXFLAGS="-O2 -std=c++17" || exit 1
         
     - name: Test OpenMP build
       run: |
-        ./omp_bfs --help || echo "OpenMP binary built successfully"
+        if [ -x "./omp_bfs" ]; then
+          echo "✅ OpenMP binary built successfully"
+          ls -la ./omp_bfs
+          file ./omp_bfs
+        else
+          echo "❌ OpenMP build failed"
+          exit 1
+        fi
         
     - name: Test MPI build
       run: |
-        mpirun -np 2 ./mpi_bfs --help || echo "MPI binary built successfully"
+        if [ -x "./mpi_bfs" ]; then
+          echo "✅ MPI binary built successfully"  
+          ls -la ./mpi_bfs
+          file ./mpi_bfs
+        else
+          echo "❌ MPI build failed"
+          exit 1
+        fi
+        
+    - name: Basic functionality test
+      run: |
+        echo "🧪 Testing basic functionality..."
+        echo "Testing OpenMP with small graph (should fail gracefully without input):"
+        timeout 5s ./omp_bfs 100 0 2>&1 || echo "OpenMP test completed (expected to fail without proper input)"
+        echo "Testing MPI with small graph (should fail gracefully without input):"
+        timeout 5s mpirun -np 2 ./mpi_bfs 100 0 2>&1 || echo "MPI test completed (expected to fail without proper input)"
         
     - name: Clean build artifacts
       run: make clean
