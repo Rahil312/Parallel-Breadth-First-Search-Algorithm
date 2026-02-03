@@ -2,21 +2,61 @@
 mpi_bfs
 omp_bfs
 cuda_bfs
+*.exe
 
-# System files
-.DS_Store
-.vscode/
+# Object files
 *.o
+*.obj
 *.out
+*.a
+*.so
+*.dylib
+
+# System files  
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+
+# Log files
+*.log
+*.txt.log
 
 # Temporary files
 *.tmp
-*.log
+*.temp
+temp/
+tmp/
 
-# Editor backups
-*~
-*.swp
-*.swo
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
 
-# OS generated files
-Thumbs.db
+# Archive files  
+*.tar
+*.tar.gz
+*.zip
+*.7z
+
+# Performance profiling
+gmon.out
+perf.data*
+*.nvprof
+
+# CUDA specific
+*.ptx
+*.cubin
+*.fatbin
