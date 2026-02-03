@@ -9,11 +9,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        compiler: [gcc, clang]
-      fail-fast: false  # Don't cancel other jobs if one fails
         
     steps:
     - name: Checkout code
@@ -24,30 +19,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential libopenmpi-dev openmpi-bin
         
-    - name: Set compiler
-      run: |
-        if [ "${{ matrix.compiler }}" = "clang" ]; then
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
-          sudo apt-get install -y clang
-        else
-          echo "CC=gcc" >> $GITHUB_ENV  
-          echo "CXX=g++" >> $GITHUB_ENV
-        fi
-        
     - name: Build OpenMP implementation
       run: |
-        echo "🔨 Building OpenMP implementation with ${{ matrix.compiler }}..."
-        echo "Using CXX=$CXX"
+        echo "🔨 Building OpenMP implementation with gcc..."
+        echo "Using CXX=g++"
         # Build directly without makefile to avoid variable conflicts
-        $CXX -O2 -std=c++17 -fopenmp openmp.cpp -o omp_bfs || {
+        g++ -O2 -std=c++17 -fopenmp openmp.cpp -o omp_bfs || {
           echo "❌ Build failed, showing detailed error info:"
           echo "Compiler version:"
-          $CXX --version
+          g++ --version
           echo "Source file exists:"
           ls -la openmp.cpp
           echo "Checking for syntax errors:"
-          $CXX -fsyntax-only openmp.cpp 2>&1 || true
+          g++ -fsyntax-only openmp.cpp 2>&1 || true
           exit 1
         }
         
