@@ -38,12 +38,35 @@ jobs:
     - name: Build OpenMP implementation
       run: |
         echo "🔨 Building OpenMP implementation with ${{ matrix.compiler }}..."
-        make omp_bfs CXX=$CXX CXXFLAGS="-O2 -std=c++17" || exit 1
+        echo "Using CXX=$CXX"
+        # Build directly without makefile to avoid variable conflicts
+        $CXX -O2 -std=c++17 -fopenmp openmp.cpp -o omp_bfs || {
+          echo "❌ Build failed, showing detailed error info:"
+          echo "Compiler version:"
+          $CXX --version
+          echo "Source file exists:"
+          ls -la openmp.cpp
+          echo "Checking for syntax errors:"
+          $CXX -fsyntax-only openmp.cpp 2>&1 || true
+          exit 1
+        }
         
     - name: Build MPI implementation  
       run: |
         echo "🔨 Building MPI implementation..."
-        make mpi_bfs MPICXX=mpic++ CXXFLAGS="-O2 -std=c++17" || exit 1
+        echo "Using mpic++"
+        mpic++ --version
+        # Build directly without makefile
+        mpic++ -O2 -std=c++17 mpi.cpp -o mpi_bfs || {
+          echo "❌ MPI build failed, showing detailed error info:"
+          echo "MPI compiler info:"
+          mpic++ --showme
+          echo "Source file exists:"
+          ls -la mpi.cpp
+          echo "Checking for syntax errors:"
+          mpic++ -fsyntax-only mpi.cpp 2>&1 || true
+          exit 1
+        }
         
     - name: Test OpenMP build
       run: |
