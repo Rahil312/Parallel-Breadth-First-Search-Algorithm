@@ -342,16 +342,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 </div>
 
-### 📝 Citation Format
-```bibtex
-@misc{parallel_bfs_2026,
-  title={Parallel Breadth-First Search: Multi-Architecture Implementation and Performance Analysis},
-  author={Rahil Shukla},
-  year={2026},
-  url={https://github.com/Rahil312/Parallel-Breadth-First-Search-Algorithm},
-  note={Parallel Systems Final Project - OpenMP, MPI, and CUDA Implementations}
-}
-```
 
 ## 📞 Connect & Support
 
