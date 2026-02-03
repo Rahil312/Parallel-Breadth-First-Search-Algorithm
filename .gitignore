@@ -1,0 +1,22 @@
+# Build artifacts
+mpi_bfs
+omp_bfs
+cuda_bfs
+
+# System files
+.DS_Store
+.vscode/
+*.o
+*.out
+
+# Temporary files
+*.tmp
+*.log
+
+# Editor backups
+*~
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
